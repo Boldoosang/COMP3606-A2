@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Product Management Application</string>
+    <string name="activitySelectorText">Please make a selection: </string>
+    <string name="receivingStocks_btn">Receiving Stocks</string>
+    <string name="orderingStocks_btn">Ordering Stocks</string>
+    <string name="outputViewHeader">PRODUCT DATABASE</string>
 </resources>
