@@ -9,15 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
-public class UpdateStockFragment extends Fragment {
+public class OrderStockFragment extends Fragment {
 
-    public UpdateStockFragment() {
+    public OrderStockFragment() {
         // Required empty public constructor
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = getView();
-        return inflater.inflate(R.layout.fragment_update_stock, container, false);
+        return inflater.inflate(R.layout.fragment_order_stock, container, false);
     }
 }
