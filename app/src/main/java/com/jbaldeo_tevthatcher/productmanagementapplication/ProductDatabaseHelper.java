@@ -16,6 +16,11 @@ public class ProductDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         updateDatabase(db, 0, DB_VER);
+
+        insertProduct(db, "Samsung Galaxy S21", 5, 5, 20, 5, 5);
+        insertProduct(db, "iPhone 13 Pro Max", 5, 5, 20, 5, 5);
+        insertProduct(db, "Google Pixel 6", 5, 5, 20, 5, 5);
+        insertProduct(db, "OnePlus 10", 5, 5, 20, 5, 5);
     }
 
     @Override
@@ -39,4 +44,5 @@ public class ProductDatabaseHelper extends SQLiteOpenHelper {
         productValues.put("REORDER_AMOUNT", ReorderAmount);
         db.insert("PRODUCT", null, productValues);
     }
+
 }

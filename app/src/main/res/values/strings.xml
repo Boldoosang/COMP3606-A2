@@ -4,4 +4,10 @@
     <string name="receivingStocks_btn">Receiving Stocks</string>
     <string name="orderingStocks_btn">Ordering Stocks</string>
     <string name="outputViewHeader">PRODUCT DATABASE</string>
+    <string name="receiveStockViewHeader">RECEIVE STOCK</string>
+    <string name="updateStockViewHeader">UPDATE STOCK</string>
+    <string name="receiveStockSelectProduct">Please select a product: </string>
+    <string name="receiveStockSelectQuantity">Please enter the quantity received: </string>
+    <string name="receiveStockSelectQuantityButton">Update Stocks</string>
+
 </resources>
