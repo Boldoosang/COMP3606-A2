@@ -1,5 +1,6 @@
 package com.jbaldeo_tevthatcher.productmanagementapplication;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,15 +14,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReceiveStockFragment extends Fragment {
+public class ReceiveStockFragment extends Fragment implements View.OnClickListener{
 
     SQLiteDatabase db;
     Cursor cursor;
@@ -54,6 +57,9 @@ public class ReceiveStockFragment extends Fragment {
     public void onStart() {
         super.onStart();
         View view = getView();
+        Button updateStocksButton = (Button) view.findViewById(R.id.button);
+        updateStocksButton.setOnClickListener(this);
+
         Spinner receiveStockSpinner = (Spinner) view.findViewById(R.id.receiveStockSpinner);
         ProductDatabaseHelper productDBHelper = new ProductDatabaseHelper(getContext());
 
@@ -103,6 +109,49 @@ public class ReceiveStockFragment extends Fragment {
     public void onSaveInstanceState(Bundle savedInstanceState){
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putInt("spinnerIndex", spinnerIndex);
+    }
+
+    @Override
+    public void onClick(View v){
+        switch(v.getId()){
+            case R.id.button:
+                makeOrder();
+        }
+    }
+
+    public void makeOrder(){
+        View v = getView();
+        Spinner receiveStockSpinner = (Spinner) v.findViewById(R.id.receiveStockSpinner);
+        TextView updateStockTextView = (TextView) v.findViewById(R.id.editTextNumber);
+
+        String orderText = updateStockTextView.getText().toString();
+        String spinnerText = receiveStockSpinner.getSelectedItem().toString();
+
+
+        ProductDatabaseHelper productDBHelper = new ProductDatabaseHelper(getContext());
+        ContentValues updatedStock = new ContentValues();
+
+
+        try{
+            db = productDBHelper.getReadableDatabase();
+            cursor = db.rawQuery("select STOCK_IN_TRANSIT from PRODUCT where NAME = '" + spinnerText + "'", null);
+            cursor.moveToFirst();
+            int numberInTransit = cursor.getInt(0) - Integer.parseInt(orderText);
+
+            cursor = db.rawQuery("select STOCK_ON_HAND from PRODUCT where NAME = '" + spinnerText + "'", null);
+            cursor.moveToFirst();
+            int stockOnHand = Integer.parseInt(orderText) + cursor.getInt(0);
+
+            updatedStock.put("STOCK_IN_TRANSIT", numberInTransit);
+            updatedStock.put("STOCK_ON_HAND", stockOnHand);
+
+            db.update("PRODUCT", updatedStock, "NAME = ?", new String[]{spinnerText});
+
+        } catch(SQLException e){
+            Toast toast = Toast.makeText(getContext(), "Unable to access database: " + e.getMessage(), Toast.LENGTH_SHORT);
+            toast.show();
+            receiveStockSpinner.setEnabled(false);
+        }
     }
 
     /*

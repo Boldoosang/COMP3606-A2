@@ -10,4 +10,9 @@
     <string name="receiveStockSelectQuantity">Please enter the quantity received: </string>
     <string name="receiveStockSelectQuantityButton">Update Stocks</string>
 
+
+    <string name="orderingStocksHeader">Order Stocks</string>
+    <string name="orderButton">Make Order</string>
+    <string name="orderStockSelectQuantity">Please enter the amount to order: </string>
+
 </resources>
