@@ -10,11 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProductManagementApplication">
         <activity
-            android:name=".TempActivity"
-            android:exported="true">
-
-        </activity>
-        <activity
             android:name=".StockActivity"
             android:exported="true" />
         <activity
