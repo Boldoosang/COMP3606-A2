@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -61,40 +62,7 @@ public class OrderStockFragment extends Fragment implements View.OnClickListener
         View view = getView();
         Button makeOrderButton = (Button) view.findViewById(R.id.orderingStock_btn);
         makeOrderButton.setOnClickListener(this);
-
-        Spinner orderStockSpinner = (Spinner) view.findViewById(R.id.orderStockSpinner);
-        ProductDatabaseHelper productDBHelper = new ProductDatabaseHelper(getContext());
-
-        if (view != null) {
-            try {
-                db = productDBHelper.getReadableDatabase();
-                cursor = db.query("PRODUCT", new String[]{"_id", "NAME"}, null, null, null, null, null);
-
-                ArrayList<String> productNames = new ArrayList<>();
-
-                if(cursor.moveToFirst()){
-                    productNames.add(cursor.getString(1));
-
-                    while(cursor.moveToNext())
-                        productNames.add(cursor.getString(1));
-
-                } else {
-                    productNames.add("No products available");
-                    orderStockSpinner.setEnabled(false);
-                }
-
-
-                ArrayAdapter spinnerAdapter = new ArrayAdapter(view.getContext(), android.R.layout.simple_spinner_item, productNames);
-
-                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                orderStockSpinner.setAdapter(spinnerAdapter);
-                orderStockSpinner.setSelection(spinnerIndex);
-            } catch(SQLException e){
-                Toast toast = Toast.makeText(getContext(), "Unable to access database: " + e.getMessage(), Toast.LENGTH_SHORT);
-                toast.show();
-                orderStockSpinner.setEnabled(false);
-            }
-        }
+        new PopulateSpinner().execute();
     }
 
     @Override
@@ -108,38 +76,104 @@ public class OrderStockFragment extends Fragment implements View.OnClickListener
     public void onClick(View v){
         switch(v.getId()){
             case R.id.orderingStock_btn:
-                makeOrder();
+                new MakeOrder().execute();
+                updateUI();
         }
     }
 
-    public void makeOrder(){
-        View v = getView();
-        Spinner orderStockSpinner = (Spinner) v.findViewById(R.id.orderStockSpinner);
-        TextView orderTextView = (TextView) v.findViewById(R.id.editTextNumber);
+    public void updateUI(){
+        OutputFragment outputFragment = new OutputFragment();
+        FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.outputContainer, outputFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        fragmentTransaction.commit();
+    }
 
-        String orderText = orderTextView.getText().toString();
-        String spinnerText = orderStockSpinner.getSelectedItem().toString();
-
-
-        ProductDatabaseHelper productDBHelper = new ProductDatabaseHelper(getContext());
+    private class MakeOrder extends AsyncTask<Void , Void, Boolean> {
         ContentValues updatedStock = new ContentValues();
+        String orderText;
+        String spinnerText;
+
+        protected void onPreExecute(){
+            View v = getView();
+            Spinner orderStockSpinner = (Spinner) v.findViewById(R.id.orderStockSpinner);
+            TextView orderTextView = (TextView) v.findViewById(R.id.editTextNumber);
+
+            orderText = orderTextView.getText().toString();
+            spinnerText = orderStockSpinner.getSelectedItem().toString();
+        }
+
+        protected Boolean doInBackground(Void... v){
+            ProductDatabaseHelper productDBHelper = new ProductDatabaseHelper(getContext());
+            try{
+                db = productDBHelper.getReadableDatabase();
+                cursor = db.rawQuery("select STOCK_IN_TRANSIT from PRODUCT where NAME = '" + spinnerText + "'", null);
+                cursor.moveToFirst();
+
+                int numberInTransit = Integer.parseInt(orderText) + cursor.getInt(0);
+
+                updatedStock.put("STOCK_IN_TRANSIT", numberInTransit);
+                db.update("PRODUCT", updatedStock, "NAME = ?", new String[]{spinnerText});
+
+                return true;
+            } catch(SQLException e){
+                return false;
+            }
+        }
+
+        protected void onPostExecute(Boolean result){
+            if(!result){
+                Toast toast = Toast.makeText(getContext(), "Unable to access database.", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }
+    }
+
+    private class PopulateSpinner extends AsyncTask<Void, Void, ArrayList<String>>{
+        Spinner orderStockSpinner;
+        ProductDatabaseHelper productDBHelper;
+        View view;
+        protected void onPreExecute(){
+            view=getView();
+            orderStockSpinner = (Spinner) view.findViewById(R.id.orderStockSpinner);
+            productDBHelper = new ProductDatabaseHelper(getContext());
+        }
+
+        protected ArrayList<String> doInBackground(Void... v){
+            if (view != null) {
+                try {
+                    db = productDBHelper.getReadableDatabase();
+                    cursor = db.query("PRODUCT", new String[]{"_id", "NAME"}, null, null, null, null, null);
+
+                    ArrayList<String> productNames = new ArrayList<>();
+
+                    if(cursor.moveToFirst()){
+                        productNames.add(cursor.getString(1));
+
+                        while(cursor.moveToNext())
+                            productNames.add(cursor.getString(1));
+
+                    } else {
+                        productNames.add("No products available");
+                        orderStockSpinner.setEnabled(false);
+                    }
+                    return productNames;
+                } catch(SQLException e){
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        protected void onPostExecute(ArrayList<String> productNames){
+            ArrayAdapter spinnerAdapter = new ArrayAdapter(view.getContext(), android.R.layout.simple_spinner_item, productNames);
+
+            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            orderStockSpinner.setAdapter(spinnerAdapter);
+            orderStockSpinner.setSelection(spinnerIndex);
 
 
-        try{
-
-            db = productDBHelper.getReadableDatabase();
-            cursor = db.rawQuery("select STOCK_IN_TRANSIT from PRODUCT where NAME = '" + spinnerText + "'", null);
-            cursor.moveToFirst();
-
-            int numberInTransit = Integer.parseInt(orderText) + cursor.getInt(0);
-
-            updatedStock.put("STOCK_IN_TRANSIT", numberInTransit);
-            db.update("PRODUCT", updatedStock, "NAME = ?", new String[]{spinnerText});
-
-        } catch(SQLException e){
-            Toast toast = Toast.makeText(getContext(), "Unable to access database: " + e.getMessage(), Toast.LENGTH_SHORT);
-            toast.show();
-            orderStockSpinner.setEnabled(false);
         }
     }
 }

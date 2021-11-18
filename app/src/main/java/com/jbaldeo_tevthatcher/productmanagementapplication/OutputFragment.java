@@ -5,6 +5,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.LinearLayoutCompat;
@@ -14,9 +15,13 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class OutputFragment extends Fragment {
 
@@ -35,29 +40,7 @@ public class OutputFragment extends Fragment {
     @Override
     public void onStart(){
         super.onStart();
-        queryDatabaseProducts();
-    }
-
-    public void queryDatabaseProducts(){
-        ProductDatabaseHelper productDBHelper = new ProductDatabaseHelper(getContext());
-        View view = getView();
-        Cursor cursor;
-
-        try {
-            SQLiteDatabase db = productDBHelper.getReadableDatabase();
-            cursor = db.query("PRODUCT", new String[] {"NAME", "STOCK_ON_HAND", "STOCK_IN_TRANSIT", "PRICE", "REORDER_QUANTITY", "REORDER_AMOUNT"}, null, null, null, null, "NAME ASC");
-            if(cursor.moveToFirst()){
-                addProductToView(cursor);
-
-                while(cursor.moveToNext()){
-                    addProductToView(cursor);
-                }
-            }
-
-        } catch(SQLException e){
-            Toast toast = Toast.makeText(view.getContext(), "Database Unavailable: "+ e.getMessage(), Toast.LENGTH_SHORT);
-            toast.show();
-        }
+        new PopulateSpinner().execute();
     }
 
     public void addProductToView(Cursor cursor){
@@ -118,5 +101,43 @@ public class OutputFragment extends Fragment {
         super.onDestroy();
         //cursor.close();
         //db.close();
+    }
+
+    private class PopulateSpinner extends AsyncTask<Void, Void, Cursor> {
+        ProductDatabaseHelper productDBHelper;
+        View view;
+        Cursor cursor;
+        protected void onPreExecute(){
+            productDBHelper = new ProductDatabaseHelper(getContext());
+            view = getView();
+        }
+
+        protected Cursor doInBackground(Void... v){
+            try {
+                SQLiteDatabase db = productDBHelper.getReadableDatabase();
+                cursor = db.query("PRODUCT", new String[] {"NAME", "STOCK_ON_HAND", "STOCK_IN_TRANSIT", "PRICE", "REORDER_QUANTITY", "REORDER_AMOUNT"}, null, null, null, null, "NAME ASC");
+
+                return cursor;
+
+            } catch(SQLException e){
+                return null;
+            }
+        }
+
+        protected void onPostExecute(Cursor res){
+            if(res == null){
+                Toast toast = Toast.makeText(view.getContext(), "Database Unavailable.", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+            else{
+                if(res.moveToFirst()){
+                    addProductToView(res);
+
+                    while(res.moveToNext()){
+                        addProductToView(res);
+                  }
+                }
+            }
+        }
     }
 }
