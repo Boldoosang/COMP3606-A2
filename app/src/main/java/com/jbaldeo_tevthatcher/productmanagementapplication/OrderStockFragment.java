@@ -1,5 +1,6 @@
 package com.jbaldeo_tevthatcher.productmanagementapplication;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -31,6 +32,7 @@ public class OrderStockFragment extends Fragment implements View.OnClickListener
 
     SQLiteDatabase db;
     Cursor cursor;
+    private Spinner orderStockSpinner;
 
     private int spinnerIndex;
 
@@ -40,7 +42,6 @@ public class OrderStockFragment extends Fragment implements View.OnClickListener
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = getView();
         return inflater.inflate(R.layout.fragment_ordering_stocks, container, false);
     }
 
@@ -67,12 +68,24 @@ public class OrderStockFragment extends Fragment implements View.OnClickListener
         Button makeOrderButton = (Button) view.findViewById(R.id.orderingStock_btn);
         makeOrderButton.setOnClickListener(this);
         new PopulateSpinner().execute();
+
+        orderStockSpinner = view.findViewById(R.id.orderStockSpinner);
+        orderStockSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                new SelectedProduct().execute();
+            }
+
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                return;
+            }
+        });
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putInt("spinnerIndex", spinnerIndex);
+        savedInstanceState.putInt("spinnerIndex", orderStockSpinner.getSelectedItemPosition());
     }
 
 
@@ -109,6 +122,7 @@ public class OrderStockFragment extends Fragment implements View.OnClickListener
 
         }
 
+        @SuppressLint("WrongThread")
         protected Boolean doInBackground(Void... v){
             ProductDatabaseHelper productDBHelper = new ProductDatabaseHelper(getContext());
 
@@ -124,7 +138,6 @@ public class OrderStockFragment extends Fragment implements View.OnClickListener
 
                 updatedStock.put("STOCK_IN_TRANSIT", numberInTransit);
                 db.update("PRODUCT", updatedStock, "NAME = ?", new String[]{spinnerText});
-                new SelectedProduct().execute();
                 return true;
             } catch(SQLException e){
                 return false;
@@ -132,6 +145,7 @@ public class OrderStockFragment extends Fragment implements View.OnClickListener
         }
 
         protected void onPostExecute(Boolean result){
+            new SelectedProduct().execute();
             if(orderText.equals("")){
                 Toast toast = Toast.makeText(getContext(), "Invalid product details entered.", Toast.LENGTH_SHORT);
                 toast.show();
@@ -144,6 +158,7 @@ public class OrderStockFragment extends Fragment implements View.OnClickListener
     }
 
     private class PopulateSpinner extends AsyncTask<Void, Void, Cursor>{
+
         Spinner orderStockSpinner;
         ProductDatabaseHelper productDBHelper;
         View view;
@@ -182,19 +197,7 @@ public class OrderStockFragment extends Fragment implements View.OnClickListener
                 spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 orderStockSpinner.setAdapter(spinnerAdapter);
 
-                orderStockSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                        new SelectedProduct().execute();
-                    }
-
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-                        return;
-                    }
-                });
-
                 orderStockSpinner.setSelection(spinnerIndex);
-
             } else {
                 productNames.add("No products available");
                 orderStockSpinner.setEnabled(false);
@@ -242,7 +245,7 @@ public class OrderStockFragment extends Fragment implements View.OnClickListener
             outputContainer.setLayoutParams(layoutParams);
 
             if(cursor.moveToFirst()){
-                cursor.moveToPosition(spinnerIndex);
+                //cursor.moveToPosition(spinnerIndex);
 
                 TextView productName = new TextView(getContext());
                 productName.setText("Product Name: " + cursor.getString(1));
@@ -255,8 +258,6 @@ public class OrderStockFragment extends Fragment implements View.OnClickListener
                 TextView stockInTransit = new TextView(getContext());
                 stockInTransit.setText("Stock in Transit: " + cursor.getString(3));
                 stockInTransit.setTextColor(Color.BLACK);
-
-                System.out.println(cursor.getString(4));
 
                 TextView reorderQuantity = new TextView(getContext());
                 reorderQuantity.setText("Reorder Quantity: " + cursor.getString(4));

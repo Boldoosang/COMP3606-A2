@@ -29,6 +29,7 @@ public class ReceiveStockFragment extends Fragment implements View.OnClickListen
 
     SQLiteDatabase db;
     Cursor cursor;
+    private Spinner receiveStockSpinner;
 
     private int spinnerIndex;
 
@@ -39,8 +40,6 @@ public class ReceiveStockFragment extends Fragment implements View.OnClickListen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // breaks when rotating
-
         if (savedInstanceState == null) {
             OutputFragment outputFragment = new OutputFragment();
             FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
@@ -62,22 +61,18 @@ public class ReceiveStockFragment extends Fragment implements View.OnClickListen
 
         new PopulateSpinner().execute();
 
+        receiveStockSpinner = view.findViewById(R.id.receiveStockSpinner);;
     }
-
-    //spinner.getSelectedItemPosition();
-    //^Use this for onItemSelection
-    //spinner.setSelection(spinnerIndex);
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         return inflater.inflate(R.layout.fragment_receive_stock, container, false);
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putInt("spinnerIndex", spinnerIndex);
+        savedInstanceState.putInt("spinnerIndex", receiveStockSpinner.getSelectedItemPosition());
     }
 
     @Override
@@ -98,41 +93,6 @@ public class ReceiveStockFragment extends Fragment implements View.OnClickListen
         fragmentTransaction.commit();
     }
 
-//    public void makeOrder(){
-//        View v = getView();
-//        Spinner receiveStockSpinner = (Spinner) v.findViewById(R.id.receiveStockSpinner);
-//        TextView updateStockTextView = (TextView) v.findViewById(R.id.editTextNumber);
-//
-//        String orderText = updateStockTextView.getText().toString();
-//        String spinnerText = receiveStockSpinner.getSelectedItem().toString();
-//
-//
-//        ProductDatabaseHelper productDBHelper = new ProductDatabaseHelper(getContext());
-//        ContentValues updatedStock = new ContentValues();
-//
-//
-//        try{
-//            db = productDBHelper.getReadableDatabase();
-//            cursor = db.rawQuery("select STOCK_IN_TRANSIT from PRODUCT where NAME = '" + spinnerText + "'", null);
-//            cursor.moveToFirst();
-//            int numberInTransit = cursor.getInt(0) - Integer.parseInt(orderText);
-//
-//            cursor = db.rawQuery("select STOCK_ON_HAND from PRODUCT where NAME = '" + spinnerText + "'", null);
-//            cursor.moveToFirst();
-//            int stockOnHand = Integer.parseInt(orderText) + cursor.getInt(0);
-//
-//            updatedStock.put("STOCK_IN_TRANSIT", numberInTransit);
-//            updatedStock.put("STOCK_ON_HAND", stockOnHand);
-//
-//            db.update("PRODUCT", updatedStock, "NAME = ?", new String[]{spinnerText});
-//
-//        } catch(SQLException e){
-//            Toast toast = Toast.makeText(getContext(), "Unable to access database: " + e.getMessage(), Toast.LENGTH_SHORT);
-//            toast.show();
-//            receiveStockSpinner.setEnabled(false);
-//        }
-//    }
-
     private class MakeOrder extends AsyncTask<Void , Void, Boolean> {
         ContentValues updatedStock = new ContentValues();
         String orderText;
@@ -140,7 +100,7 @@ public class ReceiveStockFragment extends Fragment implements View.OnClickListen
 
         protected void onPreExecute(){
             View v = getView();
-            Spinner receiveStockSpinner = (Spinner) v.findViewById(R.id.receiveStockSpinner);
+            receiveStockSpinner = (Spinner) v.findViewById(R.id.receiveStockSpinner);
             TextView updateStockTextView = (TextView) v.findViewById(R.id.editTextNumber);
 
             orderText = updateStockTextView.getText().toString();
@@ -237,12 +197,12 @@ public class ReceiveStockFragment extends Fragment implements View.OnClickListen
         }
     }
 
-    /*
+
     @Override
     public void onDestroy(){
         super.onDestroy();
         cursor.close();
         db.close();
     }
-    */
+
 }
