@@ -149,14 +149,23 @@ public class ReceiveStockFragment extends Fragment implements View.OnClickListen
 
         protected Boolean doInBackground(Void... v){
             ProductDatabaseHelper productDBHelper = new ProductDatabaseHelper(getContext());
+
+            if(orderText.equals(""))
+                return false;
+
             try{
                 db = productDBHelper.getReadableDatabase();
                 cursor = db.rawQuery("select STOCK_IN_TRANSIT from PRODUCT where NAME = '" + spinnerText + "'", null);
                 cursor.moveToFirst();
+
                 int numberInTransit = cursor.getInt(0) - Integer.parseInt(orderText);
+
+                if(numberInTransit < 0)
+                    return false;
 
                 cursor = db.rawQuery("select STOCK_ON_HAND from PRODUCT where NAME = '" + spinnerText + "'", null);
                 cursor.moveToFirst();
+
                 int stockOnHand = Integer.parseInt(orderText) + cursor.getInt(0);
 
                 updatedStock.put("STOCK_IN_TRANSIT", numberInTransit);
@@ -171,8 +180,12 @@ public class ReceiveStockFragment extends Fragment implements View.OnClickListen
         }
 
         protected void onPostExecute(Boolean result){
+            if(orderText.equals("")){
+                Toast toast = Toast.makeText(getContext(), "Invalid product quantity entered.", Toast.LENGTH_SHORT);
+                toast.show();
+            }
             if(!result){
-                Toast toast = Toast.makeText(getContext(), "Unable to access database.", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getContext(), "Unable to update database. Ensure quantity does not result in negative number.", Toast.LENGTH_SHORT);
                 toast.show();
             }
         }

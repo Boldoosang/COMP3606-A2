@@ -69,7 +69,7 @@ public class OutputFragment extends Fragment {
         stockOnHand.setTextColor(Color.BLACK);
         stockInTransit.setText("Stock in Transit: " + cursor.getString(2));
         stockInTransit.setTextColor(Color.BLACK);
-        reorderQuantity.setText("Reorder Quantity: " + cursor.getString(3));
+        reorderQuantity.setText("Reorder Quantity: " + cursor.getString(4));
         reorderQuantity.setTextColor(Color.BLACK);
         reorderAmount.setText("Reorder Amount: " + cursor.getString(5));
         reorderAmount.setTextColor(Color.BLACK);
@@ -135,7 +135,7 @@ public class OutputFragment extends Fragment {
 
                     while(res.moveToNext()){
                         addProductToView(res);
-                  }
+                    }
                 }
             }
         }
