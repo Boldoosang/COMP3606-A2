@@ -136,7 +136,9 @@ public class OrderStockFragment extends Fragment implements View.OnClickListener
 
                 int numberInTransit = Integer.parseInt(orderText) + cursor.getInt(0);
 
+                updatedStock.put("DIRTY", true);
                 updatedStock.put("STOCK_IN_TRANSIT", numberInTransit);
+
                 db.update("PRODUCT", updatedStock, "NAME = ?", new String[]{spinnerText});
                 return true;
             } catch(SQLException e){
