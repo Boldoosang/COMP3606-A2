@@ -1,7 +1,5 @@
 package com.jbaldeo_tevthatcher.productmanagementapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -11,6 +9,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -33,14 +33,12 @@ public class TopLevelActivity extends AppCompatActivity {
     }
 
     public void receiveStock(View view){
-        Intent intent = new Intent(this, StockActivity.class);
-        intent.putExtra("EXTRA_ACTIVITY", "receiveStock");
+        Intent intent = new Intent(this, ReceiveStockActivity.class);
         startActivity(intent);
     }
 
     public void orderStock(View view){
-        Intent intent = new Intent(this, StockActivity.class);
-        intent.putExtra("EXTRA_ACTIVITY", "orderStock");
+        Intent intent = new Intent(this, OrderStockActivity.class);
         startActivity(intent);
     }
 
