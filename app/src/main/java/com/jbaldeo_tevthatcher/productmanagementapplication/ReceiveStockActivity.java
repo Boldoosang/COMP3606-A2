@@ -14,13 +14,5 @@ public class ReceiveStockActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        /*if(savedInstanceState == null){
-            OrderStockFragment orderStockFragment = new OrderStockFragment();
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.activityContainer, orderStockFragment);
-            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-            fragmentTransaction.commit();
-        }*/
-
     }
 }
