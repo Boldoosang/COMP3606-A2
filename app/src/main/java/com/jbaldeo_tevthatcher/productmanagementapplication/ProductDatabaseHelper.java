@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class ProductDatabaseHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "PRODUCT_DB";
-    private static final int DB_VER = 2;
+    private static final int DB_VER = 1;
 
     ProductDatabaseHelper(Context context){
         super(context, DB_NAME, null, DB_VER);
@@ -32,8 +32,8 @@ public class ProductDatabaseHelper extends SQLiteOpenHelper {
         if(oldVer < 1){
             db.execSQL("CREATE TABLE PRODUCT (_id INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, STOCK_ON_HAND INTEGER, STOCK_IN_TRANSIT INTEGER, PRICE FLOAT, REORDER_QUANTITY INTEGER, REORDER_AMOUNT INTEGER)");
         }
-        if(oldVer < 3){
-            db.execSQL("ALTER TABLE PRODUCT ADD COLUMN DIRTY default 'FALSE'");
+        if(oldVer < 2){
+            db.execSQL("ALTER TABLE PRODUCT ADD COLUMN DIRTY default 0");
         }
     }
 
