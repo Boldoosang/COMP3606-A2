@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 public class ReceiveStockActivity extends AppCompatActivity {
 
@@ -14,5 +15,12 @@ public class ReceiveStockActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
+        if(savedInstanceState == null){
+            OrderStockFragment orderStockFragment = new OrderStockFragment();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.receiveStockContainer, orderStockFragment);
+            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            fragmentTransaction.commit();
+        }
     }
 }
