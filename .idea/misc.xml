@@ -3,17 +3,18 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Tevon/Documents/GitHub/COMP3606-A2/app/src/main/res/layout-sw600dp/fragment_ordering_stocks.xml" value="0.275" />
+        <entry key="..\:/Users/Tevon/Documents/GitHub/COMP3606-A2/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/Users/Tevon/Documents/GitHub/COMP3606-A2/app/src/main/res/layout/fragment_ordering_stocks.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Tevon/Documents/GitHub/COMP3606-A2/app/src/main/res/layout/fragment_output.xml" value="0.28306159420289856" />
         <entry key="..\:/Users/jbald/AndroidStudioProjects/ProductManagementApplication/app/src/main/res/layout-sw600dp/activity_ordering_stocks.xml" value="0.1" />
         <entry key="..\:/Users/jbald/AndroidStudioProjects/ProductManagementApplication/app/src/main/res/layout-sw600dp/activity_stock.xml" value="0.1" />
-        <entry key="..\:/Users/jbald/AndroidStudioProjects/ProductManagementApplication/app/src/main/res/layout-sw600dp/fragment_ordering_stocks.xml" value="0.1" />
         <entry key="..\:/Users/jbald/AndroidStudioProjects/ProductManagementApplication/app/src/main/res/layout-sw600dp/fragment_receive_stock.xml" value="0.1" />
         <entry key="..\:/Users/jbald/AndroidStudioProjects/ProductManagementApplication/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/jbald/AndroidStudioProjects/ProductManagementApplication/app/src/main/res/layout/activity_ordering_stocks.xml" value="0.12708333333333333" />
         <entry key="..\:/Users/jbald/AndroidStudioProjects/ProductManagementApplication/app/src/main/res/layout/activity_receiving_stocks.xml" value="0.12708333333333333" />
         <entry key="..\:/Users/jbald/AndroidStudioProjects/ProductManagementApplication/app/src/main/res/layout/activity_stock.xml" value="0.12708333333333333" />
         <entry key="..\:/Users/jbald/AndroidStudioProjects/ProductManagementApplication/app/src/main/res/layout/activity_temp.xml" value="0.10572916666666667" />
-        <entry key="..\:/Users/jbald/AndroidStudioProjects/ProductManagementApplication/app/src/main/res/layout/fragment_order_stock.xml" value="0.1743659420289855" />
-        <entry key="..\:/Users/jbald/AndroidStudioProjects/ProductManagementApplication/app/src/main/res/layout/fragment_ordering_stocks.xml" value="0.11927083333333334" />
         <entry key="..\:/Users/jbald/AndroidStudioProjects/ProductManagementApplication/app/src/main/res/layout/fragment_output.xml" value="0.2" />
         <entry key="..\:/Users/jbald/AndroidStudioProjects/ProductManagementApplication/app/src/main/res/layout/fragment_receive_stock.xml" value="0.13269927536231885" />
         <entry key="..\:/Users/jbald/AndroidStudioProjects/ProductManagementApplication/app/src/main/res/layout/fragment_update_stock.xml" value="0.13269927536231885" />

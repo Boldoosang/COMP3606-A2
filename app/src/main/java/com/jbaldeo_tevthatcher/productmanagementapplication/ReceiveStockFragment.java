@@ -130,6 +130,7 @@ public class ReceiveStockFragment extends Fragment implements View.OnClickListen
 
                 updatedStock.put("STOCK_IN_TRANSIT", numberInTransit);
                 updatedStock.put("STOCK_ON_HAND", stockOnHand);
+                updatedStock.put("DIRTY", true);
 
                 db.update("PRODUCT", updatedStock, "NAME = ?", new String[]{spinnerText});
 
